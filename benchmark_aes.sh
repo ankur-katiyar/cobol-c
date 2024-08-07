@@ -16,7 +16,7 @@ generate_random_string() {
 }
 
 # Executable to be called
-executable="./PTCRYPT" # Replace with your actual executable name
+executable="./PTPCRYPT" 
 
 # Length of the random string
 string_length=10

@@ -6,7 +6,7 @@ gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c -lcrypto
 sudo cp libopenssl_aes.so /usr/lib64/
 
 echo "Compiling AES based encryption module"
-cob -x -d openssl_aes PTCRYPT.cbl -L. -lcrypto -l:libopenssl_aes.so -o PTCRYPT
+cob -x -d openssl_aes PTPCRYPT.cbl -L. -lcrypto -l:libopenssl_aes.so -o PTPCRYPT
 
 echo "Compiling GPG based encryption module"
 cob -x PTPCRYPG.cbl -o PTPCRYPG

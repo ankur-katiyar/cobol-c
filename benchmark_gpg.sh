@@ -16,7 +16,7 @@ generate_random_string() {
 }
 
 # Executable to be called
-executable="./PTPCRYPG " # Replace with your actual executable name
+executable="./PTPCRYPG " 
 
 # Length of the random string
 string_length=10
