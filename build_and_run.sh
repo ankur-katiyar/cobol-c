@@ -2,7 +2,7 @@ echo "Installing openssl-devel"
 sudo yum install -y openssl-devel
 
 echo "Generating GPG Key".
-gpg --batch --generate-key gpg-key.cfg
+gpg --batch --gen-key gpg-key.cfg
 
 echo "Building AES Encryption C module"
 gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c -lcrypto
