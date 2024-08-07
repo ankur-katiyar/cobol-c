@@ -1,15 +1,18 @@
 echo "Installing openssl-devel"
-sudo yum install openssl-devel
+sudo yum install -y openssl-devel
+
+echo "Generating GPG Key".
+gpg --batch --generate-key gpg-key.cfg
 
 echo "Building AES Encryption C module"
 gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c -lcrypto
 sudo cp libopenssl_aes.so /usr/lib64/
 
 echo "Compiling AES based encryption module"
-cob -x -d openssl_aes PTPCRYPT.cbl -L. -lcrypto -l:libopenssl_aes.so -o PTPCRYPT
+cob -x -d openssl_aes PTPCRYPT.CBL -L. -lcrypto -l:libopenssl_aes.so -o PTPCRYPT
 
 echo "Compiling GPG based encryption module"
-cob -x PTPCRYPG.cbl -o PTPCRYPG
+cob -x PTPCRYPG.CBL -o PTPCRYPG
 
 echo "Now running benchmarks"
 
