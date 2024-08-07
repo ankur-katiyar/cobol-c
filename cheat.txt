@@ -1,0 +1,233 @@
+sudo yum install openssl-devel
+gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c -lcrypto
+sudo cp libopenssl_aes.so /usr/lib64/
+cob -x -d openssl_aes PTCRYPT.cbl -L. -lcrypto -l:libopenssl_aes.so -o PTCRYPT
+
+cob -x PTPCRYPG.cbl -o PTPCRYPG
+
+
+
+gcc -shared -fPIC  -o libmyCDLL.so myCDLL.c
+cob -x -d myCDLL Program1.cbl -lmyCDLL -o Program1
+./Program1 
+
+
+
+   1  mkdir cobol-c
+    2  cd col
+    3  cd cobol-c/
+    4  ls
+    5  vi Program1.cbl
+    6  vi myCDLL.c
+    7  cat myCDLL.c 
+    8  gcc -shared -o myCDLL.so myCDLL.c
+    9  rm myCDLL.c 
+   10  vi myCDLL.c
+   11  gcc -shared -o myCDLL.so myCDLL.c
+   12  gcc -shared -fPIC -o myCDLL.so myCDLL.c
+   13  ls
+   14  cob Program1.cbl -o Program1
+   15  cat Program1.
+   16  cat Program1.cbl 
+   17  cob Program1.cbl -o Program1
+   18  rm Program1.cbl 
+   19  vi Program1.cbl
+   20  cob Program1.cbl -o Program1
+   21  clear
+   22  ls
+   23  cobrun Program1.int 
+   24  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH/:.
+   25  cobrun Program1.int 
+   26  cat Program1.
+   27  cat Program1.cbl 
+   28  cob -x Program1.cbl -o Program1
+   29  cob -x Program1.cbl -L. -lmyCDLL -o Program1
+   30  cob -x Program1.cbl -L.  -o Program1
+   31  cob -x Program1.cbl -L. -lmyCDLL.so -o Program1
+   32  cob -x Program1.cbl -L. -lmyCDLL -o Program1
+   33  cob -x Program1.cbl  -lmyCDLL -o Program1
+   34  cob -?
+   35  cob -x Program1.cbl  -U -L. -lmyCDLL -o Program1
+   36  cob -x Program1.cbl  -U -L. -l.\myCDLL -o Program1
+   37  cob -x Program1.cbl  -U -L. -l./myCDLL -o Program1
+   38  cob -x Program1.cbl  -U -L.  -o Program1
+   39  ls
+   40  ./Program1 
+   41  cob -x Program1.cbl  -U -L. -lmyCDLL -o Program1
+   42  echo $LD_LIBRARY_PATH 
+   43  export LD_LIBRARY_PATH=~/cobol-c/:$LD_LIBRARY_PATH
+   44  cob -x Program1.cbl  -U -L. -lmyCDLL -o Program1
+   45  ld -myCDLL --verbose
+   46  ld -lmyCDLL --verbose
+   47  cob -x Program1.cbl  -U -L~/cobol-c/  -o Program1
+   48  ./Program1 
+   49  vi Program1.cbl 
+   50  cat myCDLL.
+   51  cat myCDLL.c
+   52  gcc -shared  -o myCDLL.so myCDLL.c
+   53  gcc -shared -fPIC  -o myCDLL.so myCDLL.c
+   54  ls
+   55  ld myCDLL.so
+   56  file myCDLL.so
+   57  nm -D --defined-only myCDLL.so
+   58  cob -x Program1.cbl   -L~/cobol-c  -o Program1
+   59  mv myCDLL.c libmyCDLL.c
+   60  vi libmyCDLL.c 
+   61  gcc -shared -fPIC  -o libmyCDLL.so libmyCDLL.c
+   62  ls
+   63  rm myCDLL.so 
+   64  mv libmyCDLL.c myCDLL.c
+   65  rm libmyCDLL.so 
+   66  gcc -shared -fPIC  -o libmyCDLL.so myCDLL.c
+   67  ls
+   68  cob -x Program1.cbl   -L~/cobol-c -lmyCDLL -o Program1
+   69  cob -x Program1.cbl   -L~/cobol-c -myCDLL -o Program1
+   70  cob -x Program1.cbl   -L~/cobol-c -lmyCDLL -o Program1
+   71  ld -lmyCDLL --verbose
+   72  ls
+   73  sudo mv libmyCDLL.so /usr/lib64/
+   74  ld -lmyCDLL --verbose
+   75  clear
+   76  ld -lmyCDLL --verbose
+   77  cob -x Program1.cbl -lmyCDLL -o Program1
+   78  cob -x -U Program1.cbl -lmyCDLL -o Program1
+   79  cob /?
+   80  cob -?
+   81  cob -x -d myCDLL Program1.cbl -lmyCDLL -o Program1
+   82  ls
+   83  ./Program1 
+   84  history
+   85  cd cobol-c/
+   86  ls
+   87  cat Program1.cbl 
+   88  cat myCDLL.c 
+   89  vi myCDLL.c
+   90  gcc -shared -fPIC  -o libmyCDLL.so myCDLL.c
+   91  mv libmyCDLL.so /usr/lib64/
+   92  sudo cp libmyCDLL.so /usr/lib64/
+   93  ./Program1 
+   94  clear
+   95  vi openssl_aes.c
+   96  gcc -Wall openssl_aes.c -o openssl_aes -lcrypto
+   97  sudo yum install openssl-devel
+   98  clear
+   99  gcc -Wall openssl_aes.c -o openssl_aes -lcrypto
+  100  ls
+  101  ./openssl_aes Ankur
+  102  vi openssl_aes.c
+  103  mkdir archived
+  104  mv * ./archived/
+  105  ls
+  106  cd archived/
+  107  ls
+  108  cd ..
+  109  clear
+  110  vi openssl_aes.c
+  111  vi openssl_ae.h
+  112  gcc -fPIC -c openssl_aes.c -o openssl_aes.o
+  113  ls
+  114  mv openssl_ae.h openssl_aes.h
+  115  gcc -fPIC -c openssl_aes.c -o openssl_aes.o
+  116  ls
+  117  gcc -shared -o libopenssl_aes.so openssl_aes.o -lcrypto
+  118  ls
+  119  vi PTCRYPT.cbl
+  120  ls
+  121  cob -x -d openssl_aes PTCRYPT.cbl -lopenssl_aes -o PTCRYPT
+  122  rm PTCRYPT.cbl 
+  123  vi PTCRYPT.cbl
+  124  cob -x -d openssl_aes PTCRYPT.cbl -lopenssl_aes -o PTCRYPT
+  125  rm PTCRYPT.cbl 
+  126  vi PTCRYPT.cbl
+  127  cob -x -d openssl_aes PTCRYPT.cbl -lopenssl_aes -o PTCRYPT
+  128  sudo cp libopenssl_aes.so /usr/lib64/
+  129  cob -x -d openssl_aes PTCRYPT.cbl -lopenssl_aes -o PTCRYPT
+  130  gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c -lcrypto
+  131  ls
+  132  rm libopenssl_aes.so 
+  133  ls
+  134  gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c -lcrypto
+  135  ls
+  136  cob -x PTCRYPT.cbl -L. -l:libopenssl_aes.so -o PTCRYPT
+  137  cob -x -d openssl_aes PTCRYPT.cbl -L. -l:libopenssl_aes.so -o PTCRYPT
+  138  vi PTCRYPT.cbl 
+  139  cob -x -d openssl_aes PTCRYPT.cbl -L. -l:libopenssl_aes.so -o PTCRYPT
+  140  vi PTCRYPT.cbl 
+  141  cob -x -d openssl_aes PTCRYPT.cbl -L. -l:libopenssl_aes.so -o PTCRYPT
+  142  gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c 
+  143  cob -x -d openssl_aes PTCRYPT.cbl -L. -l:libopenssl_aes.so -o PTCRYPT
+  144  gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c -lcrypto
+  145  cob -x -d openssl_aes PTCRYPT.cbl -L. -l:libopenssl_aes.so -o PTCRYPT
+  146  gcc -Wl,--copy-dt-needed-entries -fPIC -shared -o libopenssl_aes.so openssl_aes.c -lcrypto
+  147  cob -x -d openssl_aes PTCRYPT.cbl -L. -l:libopenssl_aes.so -o PTCRYPT
+  148  sudo rm /usr/lib64/libopenssl_aes.so 
+  149  sudo cp libopenssl_aes.so /usr/lib64/
+  150  cob -x -d openssl_aes PTCRYPT.cbl -L. -l:libopenssl_aes.so -o PTCRYPT
+  151  gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c -lcrypto
+  152  sudo cp libopenssl_aes.so /usr/lib64/
+  153  cob -x -d openssl_aes PTCRYPT.cbl -L. -o PTCRYPT
+  154  cob -x -d openssl_aes PTCRYPT.cbl -L. -l:libopenssl_aes.so -o PTCRYPT
+  155  ls
+  156  export LDFLAGS="-Wl,--copy-dt-needed-entries"
+  157  cob -x -d openssl_aes PTCRYPT.cbl -L. -l:libopenssl_aes.so -o PTCRYPT
+  158  gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c
+  159  cob -x -d openssl_aes PTCRYPT.cbl -L. -l:libopenssl_aes.so -o PTCRYPT
+  160  gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c -lcrypto
+  161  cob -x -d openssl_aes PTCRYPT.cbl -L. -l:libopenssl_aes.so -o PTCRYPT
+  162  history |grep nm
+  163  nm -D --defined-only libopenssl_aes.so 
+  164  cob -x -d openssl_aes PTCRYPT.cbl -L. -lcrypto -l:libopenssl_aes.so -o PTCRYPT
+  165  ls
+  166  ./PTCRYPT 
+  167  history
+
+
+
+  GPG
+
+      1  ls
+    2  ls
+    3  history
+    4  mkdir cobol-c
+    5  cd cobol-c/
+    6  ls
+    7  vi PTCRYPT.cbl
+    8  vi openssl_aes.c
+    9  vi openssl_aes.h
+   10  gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c -lcrypto
+   11  sudo yum install openssl-devel
+   12  clear
+   13  gcc -fPIC -shared -o libopenssl_aes.so openssl_aes.c -lcrypto
+   14  ls
+   15  cob -x -d openssl_aes PTCRYPT.cbl -L. -lcrypto -l:libopenssl_aes.so -o PTCRYPT
+   16  ./PTCRYPT ANKURKATIYAR
+   17  sudo cp libopenssl_aes.so /usr/lib64/
+   18  ./PTCRYPT ANKURKATIYAR
+   19  gpg
+   20  vi benchmark.sh
+   21  chmod +x benchmark.sh 
+   22  ./benchmark.sh 1000
+   23  gpg --recipient "raj" --output "C:\a.txt.gpg" --yes --encrypt
+   24  gpg --list-key
+   25  gpg --list-keys
+   26  gpg --list-keys
+   27  gpg --full-generate-key
+   28  clear
+   29  gpg --list-keys
+   30  gpg --full-generate-key
+   31  gpg
+   32  gpg help
+   33  gpg ?
+   34  gpg --gen-key
+   35  echo "Hello World" | gpg -e -r ankur.katiyar@gmail.com
+   36  clear
+   37  base64
+   38  vi gpgencrypt.sh
+   39  chmod +x gpgencrypt.sh 
+   40  ./gpgencrypt.sh ankur.katiyar@gmail.com ANKUR
+   41  rm gpgencrypt.sh 
+   42  vi gpgencrypt.sh
+   43  ./gpgencrypt.sh ankur.katiyar@gmail.com ANKUR
+   44  chmod +x gpgencrypt.sh 
+   45  ./gpgencrypt.sh ankur.katiyar@gmail.com ANKUR
+   46  history
