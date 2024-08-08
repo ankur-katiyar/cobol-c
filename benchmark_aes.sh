@@ -30,6 +30,8 @@ do
     # Generate a random string
     random_string=$(generate_random_string $string_length)
 
+    echo "Iteration $i Start: Input='$random_string'"
+
     # Measure the time taken to execute the command
     start_time=$(date +%s%N)
     $executable "$random_string"
@@ -41,7 +43,8 @@ do
     # Accumulate the total time
     total_time=$((total_time + duration))
 
-    echo "Iteration $i: Input='$random_string', Time=$((duration / 1000000)) ms"
+    echo "Iteration $i End: Time=$((duration / 1000000)) ms"
+    echo "*************************************"
 done
 
 # Calculate the average time in milliseconds

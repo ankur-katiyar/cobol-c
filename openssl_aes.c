@@ -1,74 +1,86 @@
-// openssl_aes.c
-// Author - Ankur Katiyar
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <openssl/evp.h>
 #include <openssl/aes.h>
 
-// Initialize encryption and decryption contexts
+// Function to initialize AES context
 int aes_init(unsigned char *key_data, int key_data_len, unsigned char *salt, EVP_CIPHER_CTX *e_ctx, EVP_CIPHER_CTX *d_ctx) {
-    int i, nrounds = 5;
+    int i;
     unsigned char key[32], iv[32];
 
-    i = EVP_BytesToKey(EVP_aes_256_cbc(), EVP_sha1(), salt, key_data, key_data_len, nrounds, key, iv);
+    i = EVP_BytesToKey(EVP_aes_256_ctr(), EVP_sha1(), salt, key_data, key_data_len, 1, key, iv);
     if (i != 32) {
         printf("Key size is %d bits - should be 256 bits\n", i);
         return -1;
     }
 
     EVP_CIPHER_CTX_init(e_ctx);
-    EVP_EncryptInit_ex(e_ctx, EVP_aes_256_cbc(), NULL, key, iv);
+    EVP_EncryptInit_ex(e_ctx, EVP_aes_256_ctr(), NULL, key, iv);
     EVP_CIPHER_CTX_init(d_ctx);
-    EVP_DecryptInit_ex(d_ctx, EVP_aes_256_cbc(), NULL, key, iv);
+    EVP_DecryptInit_ex(d_ctx, EVP_aes_256_ctr(), NULL, key, iv);
 
     return 0;
 }
 
-// Encrypts the plaintext
-unsigned char* aes_encrypt(EVP_CIPHER_CTX *e, unsigned char *plaintext, int *len) {
-    int c_len = *len + AES_BLOCK_SIZE, f_len = 0;
-    unsigned char *ciphertext = malloc(c_len);
+// Function to convert binary data to a hexadecimal string
+void bin_to_hex(const unsigned char *bin, int len, char *hex) {
+    for (int i = 0; i < len; i++) {
+        sprintf(hex + (i * 2), "%02x", bin[i]);
+    }
+    hex[len * 2] = '\0';
+}
+
+// Function to convert a hexadecimal string to binary data
+void hex_to_bin(const char *hex, unsigned char *bin) {
+    for (int i = 0; i < strlen(hex) / 2; i++) {
+        sscanf(hex + (i * 2), "%02x", &bin[i]);
+    }
+}
+
+// Function to encrypt plaintext and return as a hexadecimal string
+char* aes_encrypt(EVP_CIPHER_CTX *e, unsigned char *plaintext, int *len) {
+    int c_len = *len, f_len = 0;
+    unsigned char *ciphertext = malloc(c_len + AES_BLOCK_SIZE);
 
     EVP_EncryptInit_ex(e, NULL, NULL, NULL, NULL);
     EVP_EncryptUpdate(e, ciphertext, &c_len, plaintext, *len);
     EVP_EncryptFinal_ex(e, ciphertext + c_len, &f_len);
 
-    *len = c_len + f_len;
-
-    // Convert the ciphertext to a numeric string of the same length as plaintext
-    char *numeric_ciphertext = malloc(*len + 1);
-    for (int i = 0; i < *len; i++) {
-        numeric_ciphertext[i] = (ciphertext[i] % 10) + '0'; // Mod 10 and convert to digit character
-    }
-    numeric_ciphertext[*len] = '\0';
+    // Convert the binary ciphertext to a hexadecimal string
+    char *hex_ciphertext = malloc((c_len + f_len) * 2 + 1);
+    bin_to_hex(ciphertext, c_len + f_len, hex_ciphertext);
 
     free(ciphertext);
-    return numeric_ciphertext;
+    *len = (c_len + f_len) * 2;  // Update length to reflect the hex string length
+    return hex_ciphertext;
 }
 
-// Decrypts the ciphertext
-unsigned char* aes_decrypt(EVP_CIPHER_CTX *d, unsigned char *numeric_ciphertext, int *len) {
-    int p_len = *len, f_len = 0;
-    unsigned char *ciphertext = malloc(p_len);
+// Function to decrypt a hexadecimal string back to plaintext
+unsigned char* aes_decrypt(EVP_CIPHER_CTX *d, const char *hex_ciphertext, int *len) {
+    int bin_len = *len / 2;
+    unsigned char *ciphertext = malloc(bin_len);
+    unsigned char *plaintext = malloc(bin_len);
 
-    // Convert numeric string back to original ciphertext
-    for (int i = 0; i < *len; i++) {
-        ciphertext[i] = numeric_ciphertext[i] - '0'; // Convert digit character back to byte
+    // Convert the hexadecimal string back to binary data
+    hex_to_bin(hex_ciphertext, ciphertext);
+
+    EVP_DecryptInit_ex(d, NULL, NULL, NULL, NULL);
+    EVP_DecryptUpdate(d, plaintext, &bin_len, ciphertext, bin_len);
+
+    int f_len = 0;
+    if (!EVP_DecryptFinal_ex(d, plaintext + bin_len, &f_len)) {
+        printf("Decryption failed.\n");
     }
 
-    unsigned char *plaintext = malloc(p_len);
-    EVP_DecryptInit_ex(d, NULL, NULL, NULL, NULL);
-    EVP_DecryptUpdate(d, plaintext, &p_len, ciphertext, *len);
-    EVP_DecryptFinal_ex(d, plaintext + p_len, &f_len);
+    *len = bin_len + f_len;
+    plaintext[*len] = '\0';  // Null-terminate the plaintext
 
-    *len = p_len + f_len;
     free(ciphertext);
     return plaintext;
 }
 
-// Cleanup encryption and decryption contexts
+// Cleanup function to free the context
 void aes_cleanup(EVP_CIPHER_CTX *e_ctx, EVP_CIPHER_CTX *d_ctx) {
     EVP_CIPHER_CTX_cleanup(e_ctx);
     EVP_CIPHER_CTX_cleanup(d_ctx);
@@ -111,24 +123,23 @@ int base64_decode(const char *input, int length, unsigned char *output) {
     return output_length;
 }
 
-
-// Example usage
+// Main function for testing
 int main() {
     unsigned char *key = (unsigned char *)"01234567890123456789012345678901"; // 32 bytes key for AES-256
-    unsigned char *iv = (unsigned char *)"0123456789012345"; // 16 bytes IV for AES
     unsigned char *salt = (unsigned char *)"12345678"; // 8 bytes salt for key generation
 
-    char *plaintext = "HelloWorld123456";
+    char *plaintext = "SG8Vy4jBJP";  // Example input string
     int len = strlen(plaintext);
 
     EVP_CIPHER_CTX en, de;
     aes_init(key, strlen((char*)key), salt, &en, &de);
 
     // Encrypt
-    unsigned char *ciphertext = aes_encrypt(&en, (unsigned char *)plaintext, &len);
-    printf("Encrypted (numeric): %s\n", ciphertext);
+    char *ciphertext = aes_encrypt(&en, (unsigned char *)plaintext, &len);
+    printf("Encrypted (hex): %s\n", ciphertext);
 
     // Decrypt
+    len = strlen(ciphertext);  // Reset the length to the size of the hex string
     unsigned char *decryptedtext = aes_decrypt(&de, ciphertext, &len);
     printf("Decrypted: %s\n", decryptedtext);
 
@@ -139,3 +150,5 @@ int main() {
 
     return 0;
 }
+
+

@@ -28,7 +28,7 @@
 
        LINKAGE SECTION.
        01 LN-PLAINTEXT-ARG.
-          05 LN-PLAINTEXT-LENGTH  PIC 9(4) COMP-5.
+          05 LN-PLAINTEXT-LENGTH  PIC 9(4) COMP.
           05 LN-PLAINTEXT         PIC X(100).
 
        PROCEDURE DIVISION USING LN-PLAINTEXT-ARG.
@@ -55,8 +55,9 @@
            DISPLAY "AES INIT FAILED" UPON SYSOUT
            STOP RUN
        END-IF.
-
-       MOVE LENGTH OF PLAINTEXT TO CIPHER-LENGTH.
+ 
+       MOVE LN-PLAINTEXT-LENGTH TO CIPHER-LENGTH.
+ ******DISPLAY CIPHER-LENGTH.       
 
        CALL 'aes_encrypt' USING
            BY VALUE ENC-CTX
@@ -68,20 +69,21 @@
                             BY VALUE CIPHER-POINTER
                             BY VALUE CIPHER-LENGTH.
 
-       CALL 'base64_encode' USING
-                            BY REFERENCE CIPHERTEXT
-                            BY VALUE CIPHER-LENGTH
-                            BY REFERENCE BASE64-CIPHER
-                            RETURNING BASE64-LENGTH.
+*******CALL 'base64_encode' USING
+  *****                     BY REFERENCE CIPHERTEXT
+  *****                     BY VALUE CIPHER-LENGTH
+  *****                     BY REFERENCE BASE64-CIPHER
+  *****                     RETURNING BASE64-LENGTH.
+  *****
+  *****DISPLAY "Base64 Ciphertext: " BASE64-CIPHER(1:BASE64-LENGTH).
+       DISPLAY "Ciphertext: " CIPHERTEXT(1:CIPHER-LENGTH).
 
-       DISPLAY "Base64 Ciphertext: " BASE64-CIPHER(1:BASE64-LENGTH).
-
-       CALL 'base64_decode' USING
-                            BY REFERENCE BASE64-CIPHER
-                            BY VALUE BASE64-LENGTH
-                            BY REFERENCE CIPHERTEXT
-                            RETURNING CIPHER-LENGTH.
-
+  *****CALL 'base64_decode' USING
+  *****                     BY REFERENCE BASE64-CIPHER
+  *****                     BY VALUE BASE64-LENGTH
+  *****                     BY REFERENCE CIPHERTEXT
+  *****                     RETURNING CIPHER-LENGTH.
+  *****
        MOVE CIPHER-LENGTH TO DECRYPTED-LENGTH.
 
        CALL 'aes_decrypt' USING
