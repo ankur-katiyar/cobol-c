@@ -74,6 +74,44 @@ void aes_cleanup(EVP_CIPHER_CTX *e_ctx, EVP_CIPHER_CTX *d_ctx) {
     EVP_CIPHER_CTX_cleanup(d_ctx);
 }
 
+// Base64 encoding function
+int base64_encode(const unsigned char *input, int length, char *output) {
+    EVP_ENCODE_CTX ctx;
+    int output_length = 0;
+    int temp_length = 0;
+
+    EVP_EncodeInit(&ctx);
+    EVP_EncodeUpdate(&ctx, (unsigned char*)output, &temp_length, input, length);
+    output_length += temp_length;
+    EVP_EncodeFinal(&ctx, (unsigned char*)(output + temp_length), &temp_length);
+    output_length += temp_length;
+
+    return output_length;
+}
+
+// Base64 decoding function
+int base64_decode(const char *input, int length, unsigned char *output) {
+    EVP_ENCODE_CTX ctx;
+    int output_length = 0;
+    int temp_length = 0;
+    int ret;
+
+    EVP_DecodeInit(&ctx);
+    ret = EVP_DecodeUpdate(&ctx, output, &temp_length, (const unsigned char*)input, length);
+    if (ret < 0) {
+        return ret;  // Error in decoding
+    }
+    output_length += temp_length;
+    ret = EVP_DecodeFinal(&ctx, output + temp_length, &temp_length);
+    if (ret < 0) {
+        return ret;  // Error in decoding
+    }
+    output_length += temp_length;
+
+    return output_length;
+}
+
+
 // Example usage
 int main() {
     unsigned char *key = (unsigned char *)"01234567890123456789012345678901"; // 32 bytes key for AES-256
